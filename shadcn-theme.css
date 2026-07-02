@@ -1,0 +1,204 @@
+/* ============================================================
+   LateralTravel — shadcn/ui theme
+   Generated from the LateralTravel design system tokens
+   (tokens/colors.css, typography.css, effects.css).
+
+   USAGE
+   - Tailwind v4 / current shadcn CLI: paste this whole file in
+     place of your generated globals.css theme block (keep your
+     own @import "tailwindcss"; line above it).
+   - Tailwind v3 shadcn projects: drop the :root / .dark blocks
+     into globals.css and keep your existing tailwind.config
+     color mappings (hsl(var(--x)) wrappers) — these variables
+     are plain hex, which Tailwind v3's hsl() wrapper can't read,
+     so switch those mappings to `var(--x)` directly instead.
+
+   RADIUS NOTE
+   LateralTravel uses non-uniform radii (buttons/inputs 6px,
+   cards 14px, modals 20px) that don't collapse into shadcn's
+   single --radius scale. --radius below drives buttons, inputs,
+   popovers, and badges (6px). Apply --radius-card / --radius-modal
+   directly on Card / Dialog via className, e.g. rounded-[14px].
+
+   DARK MODE
+   The brand brief only specifies a light UI. The .dark block
+   below is an original derivation (ocean-900 base) for teams
+   that need one — revisit before shipping.
+   ============================================================ */
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --radius: 0.375rem; /* 6px — buttons / inputs / popovers */
+  --radius-card: 0.875rem; /* 14px */
+  --radius-modal: 1.25rem; /* 20px */
+
+  --font-sans: "DM Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-serif: "DM Serif Display", Georgia, "Times New Roman", serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "Courier New", monospace;
+
+  --background: #ffffff;
+  --foreground: #14222b;
+
+  --card: #ffffff;
+  --card-foreground: #14222b;
+  --popover: #ffffff;
+  --popover-foreground: #14222b;
+
+  --primary: #1a7290; /* ocean-600 */
+  --primary-foreground: #ffffff;
+
+  --secondary: #ecf0f4; /* slate-100 */
+  --secondary-foreground: #14222b;
+
+  --muted: #f6f8fa; /* slate-50 */
+  --muted-foreground: #54717f; /* slate-600 */
+
+  --accent: #d4ebf4; /* ocean-100 — subtle hover/highlight tint */
+  --accent-foreground: #185b74; /* ocean-700 */
+
+  --destructive: #e54141;
+  --destructive-foreground: #ffffff;
+
+  --border: #d8e0e8; /* slate-200 */
+  --input: #d8e0e8;
+  --ring: #1b8aad; /* ocean-500 — focus ring */
+
+  --chart-1: #1a7290; /* ocean-600 */
+  --chart-2: #ef6230; /* sunset-500 */
+  --chart-3: #f4b942; /* gold-500 */
+  --chart-4: #c9a74f; /* sand-500 */
+  --chart-5: #54717f; /* slate-600 */
+
+  --sidebar: #f6f8fa;
+  --sidebar-foreground: #14222b;
+  --sidebar-primary: #1a7290;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #ecf0f4;
+  --sidebar-accent-foreground: #14222b;
+  --sidebar-border: #d8e0e8;
+  --sidebar-ring: #1b8aad;
+
+  /* LateralTravel-specific, beyond stock shadcn tokens */
+  --brand-accent: #ef6230; /* sunset — reserve for top-priority CTAs only */
+  --brand-accent-hover: #d44e1c;
+  --brand-accent-foreground: #ffffff;
+  --success: #2eab7b;
+  --success-foreground: #ffffff;
+  --warning: #f4b942;
+  --warning-foreground: #473615;
+  --shadow-color: 13 47 59; /* ocean-900, for tinted shadows: rgb(var(--shadow-color) / .1) */
+}
+
+.dark {
+  --background: #0d2f3b; /* ocean-900 */
+  --foreground: #ecf0f4;
+
+  --card: #134659; /* ocean-800 */
+  --card-foreground: #ecf0f4;
+  --popover: #134659;
+  --popover-foreground: #ecf0f4;
+
+  --primary: #3ca2c4; /* ocean-400 — lighter for contrast on dark */
+  --primary-foreground: #0d2f3b;
+
+  --secondary: #185b74; /* ocean-700 */
+  --secondary-foreground: #ecf0f4;
+
+  --muted: #134659;
+  --muted-foreground: #98aebc; /* slate-400 */
+
+  --accent: #185b74;
+  --accent-foreground: #d4ebf4;
+
+  --destructive: #e54141;
+  --destructive-foreground: #ffffff;
+
+  --border: #1b4c5e;
+  --input: #1b4c5e;
+  --ring: #3ca2c4;
+
+  --chart-1: #3ca2c4;
+  --chart-2: #f88358;
+  --chart-3: #f4b942;
+  --chart-4: #d8bd76;
+  --chart-5: #98aebc;
+
+  --sidebar: #0d2f3b;
+  --sidebar-foreground: #ecf0f4;
+  --sidebar-primary: #3ca2c4;
+  --sidebar-primary-foreground: #0d2f3b;
+  --sidebar-accent: #134659;
+  --sidebar-accent-foreground: #ecf0f4;
+  --sidebar-border: #1b4c5e;
+  --sidebar-ring: #3ca2c4;
+
+  --brand-accent: #f88358;
+  --brand-accent-hover: #ffa483;
+  --brand-accent-foreground: #0d2f3b;
+  --success: #2eab7b;
+  --success-foreground: #0d2f3b;
+  --warning: #f4b942;
+  --warning-foreground: #0d2f3b;
+  --shadow-color: 0 0 0;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --font-sans: var(--font-sans);
+  --font-serif: var(--font-serif);
+  --font-mono: var(--font-mono);
+
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: var(--radius);
+  --radius-lg: var(--radius-card);
+  --radius-xl: var(--radius-modal);
+  --font-heading: var(--font-sans);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+}
