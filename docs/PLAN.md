@@ -61,9 +61,13 @@ Reason: this scope is specific enough to feel designed, but still maps cleanly t
 
 - Every required assessment capability maps to one planned screen or API route.
 
-## Phase 1: Project Foundation
+## Phase 1: Project Foundation (Done)
 
 **Goal:** make the project ready for disciplined development.
+
+**Status:** Done.
+
+**Verification:** `pnpm test && pnpm lint && pnpm build` passes.
 
 **Work:**
 

@@ -3,3 +3,17 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 @import "../shadcn-theme.css";
+
+@layer base {
+  body {
+    min-height: 100dvh;
+    font-feature-settings:
+      "rlig" 1,
+      "calt" 1;
+  }
+
+  ::selection {
+    background: var(--accent);
+    color: var(--accent-foreground);
+  }
+}
