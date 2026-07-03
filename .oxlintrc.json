@@ -29,6 +29,7 @@
     "coverage/**",
     "node_modules/**",
     "out/**",
-    "types/**"
+    "types/**",
+    "public/mockServiceWorker.js"
   ]
 }

@@ -17,22 +17,22 @@ Reason: this scope is specific enough to feel designed, but still maps cleanly t
 ## Core Choices
 
 - **Framework:** Next.js App Router with React and TypeScript.
-  - Reason: one app, one local command, easy deployment, supports server routes for the small backend requirement.
-- **Backend:** Next.js Route Handlers under `app/api`.
-  - Reason: enough to prove API design without spending time on Express/Nest setup.
-- **Validation:** Zod for API payloads, search params and forms.
-  - Reason: shared runtime validation makes invalid states explicit.
-- **Forms:** React Hook Form with Zod resolver.
-  - Reason: strong validation UX with little boilerplate.
+  - Reason: one app, one local command, easy deployment, supports a focused frontend delivery.
+- **Backend contract:** MSW-backed mock API for all `/api/*` endpoints.
+  - Reason: lets the frontend develop against real HTTP boundaries while assuming the backend team owns runtime validation.
+- **Contracts:** TypeScript request/response types only.
+  - Reason: the frontend and backend contract is compile-time here; no duplicate Zod schemas for trusted internal endpoints.
+- **Forms:** React Hook Form with field-level validation.
+  - Reason: strong validation UX with little boilerplate and no runtime API schema duplication.
 - **Styling:** Tailwind plus small reusable UI primitives.
   - Reason: fast iteration, consistent responsive UI, no heavy component dependency.
 - **State:** URL search params for search/filter state; local component state for forms; no global store unless favourites are added.
   - Reason: search state should be shareable, most other state is local.
-- **Data:** Seeded in-memory data.
+- **Data:** Seeded in-memory mock data.
   - Reason: the assessment is frontend-focused; no database keeps scope under control.
-- **Testing:** Vitest for domain logic and schemas, plus one integration/e2e happy path if time allows.
+- **Testing:** Vitest for domain logic, contracts and one integration/e2e happy path if time allows.
   - Reason: tests cover high-risk behavior instead of snapshots of markup.
-- **Observability:** structured server logs for API requests and booking creation.
+- **Observability:** console instrumentation around user-facing flow milestones.
   - Reason: meets basics without adding external services.
 
 ## Phase 0: Setup And Scope Lock
@@ -72,9 +72,8 @@ Reason: this scope is specific enough to feel designed, but still maps cleanly t
 **Work:**
 
 - Add dependencies:
-  - `zod`
   - `react-hook-form`
-  - `@hookform/resolvers`
+  - `msw`
   - `vitest`
   - `@testing-library/react`
   - `@testing-library/jest-dom`
@@ -98,9 +97,13 @@ Foundation first avoids mixing build/test setup with product work. It also shows
 - `pnpm lint`, `pnpm test` and `pnpm build` have clear scripts.
 - App has real metadata and no starter copy.
 
-## Phase 2: Domain Model And API Contracts
+## Phase 2: Domain Model, API Contracts And MSW Mocks (Done)
 
 **Goal:** create typed contracts before UI screens depend on them.
+
+**Status:** Done.
+
+**Verification:** `pnpm test && pnpm lint && pnpm build` passes.
 
 **Work:**
 
@@ -112,24 +115,27 @@ Foundation first avoids mixing build/test setup with product work. It also shows
   - `Booking`
   - `Money`
   - `DateRange`
-- Define Zod schemas:
-  - search params schema;
-  - review input schema;
-  - availability query schema;
-  - booking input schema.
-- Define API response helpers:
-  - success response shape;
-  - validation error response;
-  - not-found response.
+- Define TypeScript-only API contracts:
+  - request/query types;
+  - response types;
+  - error response type;
+  - route-to-contract map.
+- Add MSW mock backend:
+  - stay search and details;
+  - reviews list and create;
+  - availability quote;
+  - booking create and lookup.
+- Add MSW contract tests for the mocked endpoints.
 
 **Reasoning:**
 
-The backend can stay small, but the contract should be deliberate. This is one of the clearest ways to show engineering quality in a short assignment.
+The frontend can trust internal backend contracts without duplicating runtime validation in Zod. MSW still gives us a realistic HTTP boundary and makes the product flow demoable before real backend integration.
 
 **Exit criteria:**
 
-- Types and schemas are reusable from API routes, tests and client helpers.
-- Invalid payload behavior is explicit.
+- Types are reusable from mocks, tests and client helpers.
+- All planned endpoints have MSW handlers.
+- Contract tests prove the mocked endpoints return the expected shapes.
 
 ## Phase 3: Seed Data And Domain Services
 
@@ -159,16 +165,16 @@ The backend can stay small, but the contract should be deliberate. This is one o
 
 **Reasoning:**
 
-Pure services make pricing and filtering testable. Repositories keep route handlers thin and easy to read.
+Pure services make pricing and filtering testable. Repositories keep MSW handlers and future backend adapters thin and easy to read.
 
 **Exit criteria:**
 
 - Domain helpers have unit tests.
-- Route handlers can call services without knowing seed data internals.
+- MSW handlers can call services without knowing seed data internals.
 
-## Phase 4: Backend API Routes
+## Phase 4: Mock Backend Scenario Coverage
 
-**Goal:** provide the backend surface required by the assessment.
+**Goal:** refine the MSW backend surface required by the assessment.
 
 **Routes:**
 
@@ -179,24 +185,24 @@ Pure services make pricing and filtering testable. Repositories keep route handl
 - `GET /api/stays/:stayId/reviews`
   - review list.
 - `POST /api/stays/:stayId/reviews`
-  - add review with basic moderation and validation.
+  - add review with basic moderation handled in frontend form logic.
 - `GET /api/stays/:stayId/availability`
   - availability and price quote for date range and guests.
 - `POST /api/bookings`
-  - validate checkout input and create mocked confirmed booking.
+  - create mocked confirmed booking.
 - `GET /api/bookings/:bookingId`
   - confirmation lookup.
 
 **Reasoning:**
 
-This API is small, complete and directly aligned to the user journey. Availability gets its own route because it behaves like a quote and can change independently from stay details.
+This mock API is small, complete and directly aligned to the user journey. Availability gets its own route because it behaves like a quote and can change independently from stay details.
 
 **Exit criteria:**
 
-- All routes return typed JSON.
-- Validation errors return useful messages.
+- All handlers return typed JSON.
+- Form-level validation prevents invalid requests before they hit the mock backend.
 - Missing resources return 404.
-- Booking creation logs a structured event.
+- Booking creation produces a retrievable confirmation.
 
 ## Phase 5: API Client Layer
 
@@ -549,16 +555,14 @@ features/
       stay-gallery.tsx
       stay-grid.tsx
       stay-search.tsx
-    model/
-      stay.schemas.ts
-      stay.types.ts
+    types/
+      stay.ts
   reviews/
     components/
       review-form.tsx
       review-list.tsx
-    model/
-      review.schemas.ts
-      review.types.ts
+    types/
+      review.ts
   bookings/
     api/
       booking-api.ts
@@ -566,9 +570,8 @@ features/
       booking-summary.tsx
       checkout-form.tsx
       confirmation-card.tsx
-    model/
-      booking.schemas.ts
-      booking.types.ts
+    types/
+      booking.ts
 
 components/
   layout/
@@ -613,7 +616,7 @@ tests/
   booking-flow.spec.ts
   filtering.spec.ts
   pricing.spec.ts
-  schemas.spec.ts
+  contracts.spec.ts
 
 docs/
   ASSESSMENT.md
