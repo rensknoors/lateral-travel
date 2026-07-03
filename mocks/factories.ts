@@ -1,5 +1,6 @@
 import { faker } from "@faker-js/faker";
 
+import { createBookingReference } from "@/features/bookings/domain/booking-service";
 import type { Booking, CreateBookingRequest } from "@/features/bookings/types/booking";
 import type { CreateReviewRequest, Review } from "@/features/reviews/types/review";
 import type { AvailabilityQuote, Stay } from "@/features/stays/types/stay";
@@ -77,17 +78,21 @@ export const createReviewFromRequest = (
 export const createBooking = (
   request: CreateBookingRequest,
   quote: AvailabilityQuote,
-): Booking => ({
-  id: faker.string.uuid(),
-  reference: `LT-${faker.string.alphanumeric({ length: 6, casing: "upper" })}`,
-  status: "confirmed",
-  createdAt: MOCK_NOW,
-  stayId: request.stayId,
-  checkIn: request.checkIn,
-  checkOut: request.checkOut,
-  guests: request.guests,
-  guest: request.guest,
-  paymentMethod: request.paymentMethod,
-  quote,
-  total: quote.total,
-});
+): Booking => {
+  const id = faker.string.uuid();
+
+  return {
+    id,
+    reference: createBookingReference(id),
+    status: "confirmed",
+    createdAt: MOCK_NOW,
+    stayId: request.stayId,
+    checkIn: request.checkIn,
+    checkOut: request.checkOut,
+    guests: request.guests,
+    guest: request.guest,
+    paymentMethod: request.paymentMethod,
+    quote,
+    total: quote.total,
+  };
+};

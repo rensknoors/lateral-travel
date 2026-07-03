@@ -1,29 +1,26 @@
 import { http, HttpResponse } from "msw";
 
 import type { Booking, CreateBookingRequest } from "@/features/bookings/types/booking";
-import { bookingsById } from "@/mocks/bookings";
-import { createBooking } from "@/mocks/factories";
-import { createAvailabilityQuote, getStay, notFound } from "@/mocks/handlers/helpers";
+import { notFound } from "@/mocks/handlers/helpers";
+import {
+  createBooking,
+  getBookingById,
+} from "@/mocks/repositories/booking-repository";
 
 export const bookingHandlers = [
   http.post("*/api/bookings", async ({ request }) => {
     const body = (await request.json()) as CreateBookingRequest;
-    const stay = getStay(body.stayId);
+    const booking = createBooking(body);
 
-    if (!stay) {
+    if (!booking) {
       return notFound("Stay not found.");
     }
-
-    const quote = createAvailabilityQuote(stay, body.checkIn, body.checkOut, body.guests);
-    const booking = createBooking(body, quote);
-
-    bookingsById.set(booking.id, booking);
 
     return HttpResponse.json<Booking>(booking, { status: 201 });
   }),
 
   http.get("*/api/bookings/:bookingId", ({ params }) => {
-    const booking = bookingsById.get(String(params.bookingId));
+    const booking = getBookingById(String(params.bookingId));
 
     if (!booking) {
       return notFound("Booking not found.");
