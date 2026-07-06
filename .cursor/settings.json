@@ -1,0 +1,10 @@
+{
+  "plugins": {
+    "figma": {
+      "enabled": true
+    },
+    "sentry": {
+      "enabled": true
+    }
+  }
+}

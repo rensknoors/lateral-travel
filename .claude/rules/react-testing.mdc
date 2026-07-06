@@ -1,0 +1,106 @@
+---
+description: Guidelines for writing unit tests
+globs: *.spec.ts,*.spec.tsx
+alwaysApply: false
+---
+
+# React testing rules
+
+## Naming conventions
+
+- Use describe names: components as “<Component />”, hooks as “useHookName”.
+- Test names should state behavior and outcome, not implementation.
+
+## Rendering
+
+- Always import render from `@tfx-frontend/shared/testing`.
+- Pass `{ withStoreProvider: true }` only if Redux store is needed; otherwise omit.
+- For routing, set initial route with `{ url: "/path?query" }` instead of wrapping routers.
+- For flags, inject GrowthBook features with `{ features: { key: { defaultValue: ... } } }`.
+- Do not rewrap MUI `LocalizationProvider`, `ThemeProvider`, `BrowserRouter`, or i18n; the shared render already does this.
+
+## Hooks
+
+- Use `renderHook` from RTL.
+- Wrap hooks with `<TestWrapper withStoreProvider>` when store access is required; otherwise `<TestWrapper>` or no wrapper.
+- Use `act(async () => { ... })` around async mutations and awaited operations.
+
+## Mocking
+
+- Prefer `jest.mock` with `...jest.requireActual(module)` and override only the specific hooks/functions used.
+- Avoid MSW for unit tests; reserve MSW for integration/e2e.
+- Don’t mock Zustand stores; use real state and reset between tests when applicable (consistent with current guideline).
+- Clear mocks in `afterEach(() => jest.clearAllMocks())`.
+
+## Queries
+
+- Prefer accessible queries (`getByRole`, `getByLabelText`, `getByText`) over test ids.
+- Prefer `toBeVisible()` for UI that should be visible; use `toBeInTheDocument()` when visibility is irrelevant or element is intentionally hidden.
+- Avoid snapshot tests; write explicit assertions for content and state (no `toMatchSnapshot`).
+- Use helpers/factories inside the test file to DRY repeated assertions and test data.
+
+## User interactions
+
+- Use `userEvent.setup()` and `await user.click(...)` for interactions; avoid `fireEvent` unless necessary.
+
+## Async patterns
+
+- Prefer `findBy*` for elements that appear after async updates; otherwise use `waitFor` for state assertions.
+- Avoid arbitrary `setTimeout`/timers; use promises and RTL’s async utilities.
+
+## RTK Query and mutation hooks
+
+- Mock RTK hooks by returning `[fn, { isLoading: boolean }]` tuples.
+- For `.unwrap()` flows, return `{ unwrap: jest.fn().mockResolvedValue(...) }` or `.mockRejectedValue(...)` and assert success/error toasts.
+
+## Translations
+
+- Don’t mock `react-i18next;` rely on test i18n that returns keys-as-text for missing translations, matching current setup.
+
+## Test structure
+
+- Arrange-Act-Assert per case; keep minimal setup in `beforeEach` and prefer per-test explicit setup when state varies.
+- Cover success, loading, error, and empty states where applicable.
+
+# Templates
+
+## Component
+
+```tsx
+import { screen } from "@testing-library/react";
+
+import { render } from "@tfx-frontend/shared/testing";
+
+describe("<MyComponent />", () => {
+  it("shows title and handles click", async () => {
+    const user = userEvent.setup();
+    render(<MyComponent />, { withStoreProvider: true, url: "/path" });
+
+    expect(screen.getByRole("heading", { name: "title.key" })).toBeVisible();
+
+    await user.click(screen.getByRole("button", { name: "cta.key" }));
+    expect(screen.getByText("result.key")).toBeVisible();
+  });
+});
+```
+
+## Hook
+
+```tsx
+import { act, renderHook } from "@testing-library/react";
+
+import { TestWrapper } from "@tfx-frontend/shared/testing";
+
+describe("useThing", () => {
+  it("returns expected state", async () => {
+    const { result } = renderHook(() => useThing(), {
+      wrapper: ({ children }) => <TestWrapper withStoreProvider>{children}</TestWrapper>,
+    });
+
+    await act(async () => {
+      await result.current.onSubmit();
+    });
+    expect(result.current.isSubmitting).toBe(false);
+  });
+});
+```

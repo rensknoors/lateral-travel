@@ -1,0 +1,58 @@
+---
+description: Guidelines for writing Typescript code and React components and hooks
+globs: *.tsx,*.ts
+alwaysApply: false
+---
+
+# React & TypeScript rules
+
+## Core principles
+
+### Value Abstraction Above Repetition
+
+- Extract reusable logic into custom hooks
+- Create generic components instead of duplicating code
+- Use TypeScript generics for flexible, type-safe abstractions
+- Prefer composition over duplication
+
+### Don't Overcomplicate
+
+- Keep components simple and focused
+- Use existing solutions (shadcn/ui) over building from scratch
+- Prefer clear, readable code over clever one-liners
+
+## Coding standards
+
+### Naming conventions
+
+- Use kebab case for all files/directories
+- Test files end with \*.spec.ts(x)
+- Favor named exports for components
+- Use PascalCase for component names
+- Use camelCase for hooks and utility functions
+
+### React
+
+- Prefer `useCallback` for event handlers passed as props
+- Use custom hooks for complex state logic
+- Optimize React renders
+- Prefer const arrow functions over traditional function syntax
+
+### TypeScript
+
+- Use strict mode
+- Use interface for object structures, declaration merging
+- Use type for unions and intersections
+- If in doubt, use a type instead of interface
+- Avoid enums, instead use const objects with a typescript helper to create unions types
+- Implement proper generic types
+- Using proper type inference
+- Avoiding 'any' type unless absolutely necessary
+- Avoid type assertions unless absolutely necessary
+- Creating reusable type utilities"
+- Prefer arrow functions over traditional function syntax
+
+## UI and styling
+
+- Use shadcn components where possible
+- Use tailwind for any customizations

@@ -1,0 +1,26 @@
+---
+alwaysApply: true
+description: Context about the project setup and structure
+---
+
+## Project description
+
+`lateral-travel` is a small booking.com-like product focused on the frontend.
+
+## Tech Stack
+
+- **Package Manager**: pnpm
+- **Framework**: React
+- **Language**: TypeScript
+- **Styling**: Tailwind
+- **UI Components**: Shadcn
+
+## Project Structure
+
+High-level layout for the Nx monorepo:
+
+TBD
+
+Conventions:
+
+TBD
