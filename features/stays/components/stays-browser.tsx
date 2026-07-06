@@ -1,13 +1,17 @@
 "use client";
 
+import { useCallback, useRef } from "react";
+
 import { CategoryTabs } from "@/features/home/components/category-tabs";
 import { HeroSection } from "@/features/home/components/hero-section";
 import { StayFilterBar } from "@/features/stays/components/stay-filter-bar";
+import type { StaySearchValues } from "@/features/stays/components/stay-search-form";
 import { StayGrid } from "@/features/stays/components/stay-grid";
 import { useStayBrowserState } from "@/features/stays/hooks/use-stay-browser-state";
 import { ContentContainer } from "@/components/layout/content-container";
 
 const StaysBrowser = () => {
+  const resultsRef = useRef<HTMLDivElement>(null);
   const {
     filters,
     data,
@@ -26,12 +30,20 @@ const StaysBrowser = () => {
     handleFavoriteToggle,
   } = useStayBrowserState();
 
+  const handleHeroSearch = useCallback(
+    (values: StaySearchValues) => {
+      handleSearch(values);
+      resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    },
+    [handleSearch],
+  );
+
   return (
     <>
-      <HeroSection initialValues={filters} onSearch={handleSearch} />
+      <HeroSection initialValues={filters} onSearch={handleHeroSearch} />
       <CategoryTabs activeCategory={filters.category} onCategoryChange={handleCategoryChange} />
 
-      <ContentContainer size="xl" className="py-12">
+      <ContentContainer ref={resultsRef} size="xl" className="scroll-mt-16 py-12">
         <div className="mb-7 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h2 className="font-serif text-3xl leading-tight tracking-[-0.02em] text-foreground">
