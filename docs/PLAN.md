@@ -307,9 +307,13 @@ Search is the main entry point. URL-driven filters make the flow shareable and a
 - Empty state explains what to change.
 - Cards link to detail pages.
 
-## Phase 8: Stay Detail Experience
+## Phase 8: Stay Detail Experience (Done)
 
 **Goal:** help the user decide whether to book.
+
+**Status:** Done.
+
+**Verification:** `pnpm test && pnpm lint && pnpm build` passes. Stay detail page at `/stays/[stayId]` renders gallery, header, amenities, remote-work fit, policies, review summary and sticky availability panel with loading, error and not-found states.
 
 **Work:**
 

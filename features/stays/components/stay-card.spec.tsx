@@ -1,4 +1,5 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
 import { StayCard } from "@/features/stays/components/stay-card";
@@ -53,28 +54,35 @@ describe("StayCard", () => {
     expect(screen.getByText("New")).toBeInTheDocument();
   });
 
-  it("toggles favorite state and notifies the callback", () => {
-    const onFavoriteToggle = vi.fn<(stayId: string, isFavorited: boolean) => void>();
+  it("toggles favorite state and notifies the callback", async () => {
+    const user = userEvent.setup();
+    const onFavoriteToggle =
+      vi.fn<(stayId: string, isFavorited: boolean) => void>();
     render(
-      <StayCard stay={createStaySummary()} onFavoriteToggle={onFavoriteToggle} />,
+      <StayCard
+        stay={createStaySummary()}
+        onFavoriteToggle={onFavoriteToggle}
+      />,
     );
 
     const favoriteButton = screen.getByRole("button", { name: "Save stay" });
     expect(favoriteButton).toHaveAttribute("aria-pressed", "false");
 
-    fireEvent.click(favoriteButton);
+    await user.click(favoriteButton);
 
     expect(onFavoriteToggle).toHaveBeenCalledWith("harbor-loft", true);
     expect(
       screen.getByRole("button", { name: "Remove from saved" }),
     ).toHaveAttribute("aria-pressed", "true");
 
-    fireEvent.click(screen.getByRole("button", { name: "Remove from saved" }));
+    await user.click(screen.getByRole("button", { name: "Remove from saved" }));
 
     expect(onFavoriteToggle).toHaveBeenLastCalledWith("harbor-loft", false);
   });
 
-  it("switches the visible photo through the gallery dots", () => {
+  it("switches the visible photo through the gallery dots", async () => {
+    const user = userEvent.setup();
+
     render(<StayCard stay={createStaySummary()} />);
 
     expect(screen.getByRole("img", { name: "Harbor Loft" })).toHaveAttribute(
@@ -82,7 +90,7 @@ describe("StayCard", () => {
       expect.stringContaining(encodeURIComponent("/img/one.jpg")),
     );
 
-    fireEvent.click(screen.getByRole("button", { name: "Show photo 2 of 3" }));
+    await user.click(screen.getByRole("button", { name: "Show photo 2 of 3" }));
 
     expect(screen.getByRole("img", { name: "Harbor Loft" })).toHaveAttribute(
       "src",
@@ -91,7 +99,9 @@ describe("StayCard", () => {
   });
 
   it("hides gallery dots for a single photo", () => {
-    render(<StayCard stay={createStaySummary({ imageUrls: ["/img/one.jpg"] })} />);
+    render(
+      <StayCard stay={createStaySummary({ imageUrls: ["/img/one.jpg"] })} />,
+    );
 
     expect(
       screen.queryByRole("button", { name: /show photo/i }),
