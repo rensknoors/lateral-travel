@@ -429,9 +429,15 @@ The payment step should be clearly mocked, not fake-complex. The value is in val
 - Confirmation page shows booking reference, stay, dates, guests and total.
 - Failed booking attempts show recoverable errors.
 
-## Phase 12: Testing
+## Phase 12: Testing (Done)
 
 **Goal:** cover meaningful behavior instead of superficial rendering.
+
+**Status:** Done.
+
+**Verification:** `pnpm test && pnpm lint && pnpm build` passes (75 tests across 13 files). New coverage: `features/stays/domain/stay-service.spec.ts` (pricing, filtering, sorting), `features/bookings/utils/checkout-schema.spec.ts` (booking payload validation) and `tests/booking-flow.spec.ts` (browse -> detail -> availability -> checkout -> confirmation through the typed API clients against MSW). CI added in `.github/workflows/ci.yml` running lint, test and build.
+
+**Note:** The flow test exercises the journey through the API client layer against the real MSW handlers instead of rendering pages; each screen already has its own component spec, and a browser-level e2e (Playwright) stays cut per the timebox strategy.
 
 **Tests:**
 

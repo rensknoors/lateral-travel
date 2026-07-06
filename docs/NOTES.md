@@ -4,11 +4,13 @@ Concise handover notes for the next agent working on this assessment.
 
 ## Current state
 
-Phases 1-11 of [docs/PLAN.md](PLAN.md) are done. Quality gate to run before any work:
+Phases 1-12 of [docs/PLAN.md](PLAN.md) are done. Quality gate to run before any work:
 
 ```bash
 pnpm test && pnpm lint && pnpm build
 ```
+
+The same gate runs in CI (`.github/workflows/ci.yml`) on pushes to `main`/`develop` and on PRs.
 
 ## Phase 10 (availability quote) handover
 
@@ -22,6 +24,15 @@ pnpm test && pnpm lint && pnpm build
 - Added `tests/render-with-query-client.tsx` — a small `renderWithQueryClient(ui)` helper that wraps a component in a fresh `QueryClient` (retries disabled). Use this for any new component test that calls a React Query hook.
 - `onUnhandledRequest: "error"` means any request hitting a route without a handler (or without a `server.use()` override) will fail the test loudly — this is intentional, keep it that way.
 - Test stay fixtures (e.g. `id: "harbor-loft"`) are **not** present in the seeded `mockStays` (random faker UUIDs, seeded in `mocks/stays.ts`). For any test that needs a specific stay response, override the handler with `server.use(http.get("*/api/stays/:stayId/...", ...))` inside the test rather than relying on the seeded data — see `features/stays/components/stay-availability-panel.spec.tsx` for the pattern.
+
+## Phase 12 (testing) handover
+
+- Domain coverage lives next to the code it tests: `features/stays/domain/stay-service.spec.ts` covers night counting, quote pricing/rounding, invalid date ranges, guest capacity, filtering (query/location/category/guests/price/amenities) and all four sort options including the recommended tiebreak chain (rating -> review count -> quiet score).
+- That spec builds stays with a local `createStay(overrides)` fixture instead of importing `mocks/factories`. Keep it that way for unit tests: the factory pulls in faker and produces randomized fields, which makes assertions on exact prices/ordering impossible.
+- `tests/booking-flow.spec.ts` is the end-to-end flow test: browse -> detail -> availability -> checkout -> confirmation through the typed API clients (`stay-api.ts`, `booking-api.ts`) against the shared MSW server. It deliberately does **not** render pages — every screen already has a component spec, and a browser e2e was cut per the plan's timebox strategy. It also avoids hardcoding stay ids by using `stays[0]` from the live list response, so it survives reseeding.
+- MSW's `server.resetHandlers()` (in `tests/setup.ts`) resets handler overrides but **not** repository state — `bookingsById` and stay favorite flags persist across tests within one spec file. Don't assert on "no bookings exist"; create what you need and assert on it.
+- `checkoutFormSchema` validation is covered in `features/bookings/utils/checkout-schema.spec.ts`. Note the mock booking endpoint itself trusts its payload (no runtime validation, per the compile-time-contracts decision in PLAN.md) — an unknown `stayId` is the only rejected case (404).
+- CI (`.github/workflows/ci.yml`) uses pnpm 10 + Node 22 and runs lint, test, build. If you add Playwright later, give it a separate job so unit feedback stays fast.
 
 ## Known gaps to watch
 
