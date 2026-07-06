@@ -4,6 +4,6 @@ import { createStay } from "@/mocks/factories";
 
 faker.seed(20260702);
 
-const fixtureStayIds = ["nordhaven-loft", "atlas-cabin", "maison-solis"] as const;
+const stayIds = Array.from({ length: 24 }, () => faker.string.uuid());
 
-export const mockStays = fixtureStayIds.map((id) => createStay({ id }));
+export const mockStays = stayIds.map((id) => createStay({ id }));
