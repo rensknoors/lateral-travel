@@ -5,6 +5,8 @@ stays, check details and reviews, see availability and pricing, and book.
 
 **Live demo:** https://lateral-travel.vercel.app
 
+![Homepage — search stays and browse featured properties](docs/screenshots/homepage.png)
+
 Built with Next.js (App Router), React 19, TypeScript, Tailwind v4, shadcn/ui,
 TanStack Query, React Hook Form + Zod, and a mocked API (MSW).
 
