@@ -401,9 +401,11 @@ Availability is modeled as a quote instead of full inventory. This is realistic 
 - User sees a clear price before checkout.
 - Invalid dates or guest counts cannot proceed.
 
-## Phase 11: Checkout And Confirmation
+## Phase 11: Checkout And Confirmation (Done)
 
 **Goal:** complete the end-to-end booking flow.
+
+**Status:** Done.
 
 **Work:**
 
