@@ -1,5 +1,5 @@
 import { Skeleton } from "@/components/ui/skeleton";
-import { StayCardSkeleton } from "@/features/stays/components/stay-card";
+import { StayCardSkeleton } from "./stay-card.skeleton";
 
 const StaysBrowserSkeleton = () => (
   <div aria-hidden="true">
