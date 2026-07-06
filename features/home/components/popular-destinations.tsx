@@ -1,5 +1,5 @@
 import { ContentContainer } from "@/components/layout/content-container";
-import { DestinationCard } from "@/components/marketing/destination-card";
+import { DestinationCard } from "@/components/ui/destination-card";
 
 const DESTINATIONS = [
   {

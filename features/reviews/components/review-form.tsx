@@ -34,6 +34,7 @@ const ReviewForm = ({ stayId }: ReviewFormProps) => {
     watch,
     setValue,
     setError,
+    clearErrors,
     setFocus,
     reset,
     formState: { errors },
@@ -115,9 +116,10 @@ const ReviewForm = ({ stayId }: ReviewFormProps) => {
                 name="rating"
                 value={value}
                 checked={rating === value}
-                onChange={() =>
-                  setValue("rating", value, { shouldValidate: true })
-                }
+                onChange={() => {
+                  setValue("rating", value, { shouldValidate: true });
+                  clearErrors("rating");
+                }}
                 className="sr-only"
                 aria-label={`${value} star${value === 1 ? "" : "s"}`}
               />

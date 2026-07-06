@@ -530,9 +530,13 @@ CI and build prove the project is not just a local demo. Optional deployment is 
 - Production build succeeds.
 - README explains release/deploy flow.
 
-## Phase 15: Documentation And Presentation
+## Phase 15: Documentation And Presentation (Done)
 
 **Goal:** make choices easy to defend.
+
+**Status:** Done.
+
+**Verification:** README rewritten with live demo URL, architecture notes, API routes, testing strategy, tradeoffs (including an honest active-time vs wall-clock note), next steps and the LLM usage note (spec-driven: ASSESSMENT.md + owner's technical spec -> PLAN.md -> one supervised agent session per phase with NOTES.md handoffs). Demo outline added as `docs/DEMO.md` (timed 5-minute click path + likely-questions appendix). Deployed to production: https://lateral-travel.vercel.app (Vercel project `lateral-travel`, Next.js preset, MSW worker verified serving). `pnpm lint && pnpm typecheck && pnpm test` passes.
 
 **Work:**
 
@@ -702,8 +706,8 @@ Do not cut:
 - Does README explain decisions and tradeoffs?
 - Can the demo be recorded in under five minutes?
 
-## Unresolved Questions
+## Unresolved Questions (all resolved)
 
-- Should the final product stay strictly within the 4-6 hour scope, or aim for a more polished portfolio-level version?
-- Should deployment to Vercel be part of the required finish line or treated as optional polish?
-- Do we want a distinctive visual theme first, or prioritize engineering completeness first?
+- ~~Should the final product stay strictly within the 4-6 hour scope, or aim for a more polished portfolio-level version?~~ Resolved: portfolio-level via agent orchestration; active hands-on time stayed roughly within the timebox and the README says so honestly.
+- ~~Should deployment to Vercel be part of the required finish line or treated as optional polish?~~ Resolved: deployed — https://lateral-travel.vercel.app.
+- ~~Do we want a distinctive visual theme first, or prioritize engineering completeness first?~~ Resolved: engineering completeness first, then a design-handoff-driven visual pass.
