@@ -496,9 +496,15 @@ Accessibility and state handling are assessment requirements and strong quality 
 - Forms have clear labels and errors.
 - No obvious keyboard traps.
 
-## Phase 14: CI And Release
+## Phase 14: CI And Release (Done)
 
 **Goal:** make the repository submission-ready.
+
+**Status:** Done.
+
+**Verification:** `pnpm lint && pnpm test && pnpm build` passes (75 tests). Production build verified end-to-end via `pnpm start`: MSW worker registers, 24 stays render and a quote -> booking round trip succeeds with zero console errors. Releases are automated with semantic-release (`.releaserc.json` + `release` job in `.github/workflows/ci.yml`): Conventional Commits drive the version, and merges to `main` produce the tag, GitHub release, `CHANGELOG.md` entry and `package.json` bump automatically. Dry-run verified locally: config loads and the commit history analyzes to a first release of v1.0.0.
+
+**Note:** MSW was gated to `NODE_ENV === "development"`, which meant production builds shipped a broken app (no `/api/*` backend). Since the mock API *is* the backend by design, `app/msw-provider.tsx` now enables the worker in all builds unless `NEXT_PUBLIC_API_MOCKING=disabled`. Vercel deployment stays optional per the timebox strategy — the README documents the flow and no config beyond the Next.js preset is needed. CI status on GitHub could not be checked from this environment (private repo, no `gh` auth); the workflow runs the exact locally-passing gate.
 
 **Work:**
 

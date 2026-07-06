@@ -4,7 +4,7 @@ Concise handover notes for the next agent working on this assessment.
 
 ## Current state
 
-Phases 1-13 of [docs/PLAN.md](PLAN.md) are done. Quality gate to run before any work:
+Phases 1-14 of [docs/PLAN.md](PLAN.md) are done. Quality gate to run before any work:
 
 ```bash
 pnpm test && pnpm lint && pnpm build
@@ -43,6 +43,16 @@ The same gate runs in CI (`.github/workflows/ci.yml`) on pushes to `main`/`devel
 - Async status announcements: the filter bar result count and the hero guest stepper count have `aria-live="polite"`; the availability quote region already had it. Keep new async status text in one of these regions or add its own.
 - `next/image` in this Next 16 install: `priority` is deprecated — use `preload` (see `stay-gallery.tsx`). The build does not warn loudly, so grep before adding new hero images.
 - Amenity filter chips are raw `<button>`s and need explicit `outline-none focus-visible:ring-3 focus-visible:ring-ring/50` (done); shared `Button`/`Input` primitives already handle their own focus styles.
+
+## Phase 14 (CI and release) handover
+
+- **MSW now runs in production builds.** `app/msw-provider.tsx` gates the worker on `NEXT_PUBLIC_API_MOCKING !== "disabled"` instead of `NODE_ENV`. The old dev-only gate shipped a broken production app (no `/api/*` backend existed). If you see the app hang on a blank screen in a prod build, check that `public/mockServiceWorker.js` is being served and the env var wasn't set.
+- Production build was smoke-tested via `pnpm start` (config `prod` in `.claude/launch.json`, port 3100): worker registers, stays render, and a full quote -> booking POST round trip succeeds in the browser.
+- Releases are automated with **semantic-release** (`.releaserc.json`, `release` job in `ci.yml` gated on the `verify` job and `main` pushes). Commit messages must follow Conventional Commits — `feat:` -> minor, `fix:` -> patch, `feat!:`/`BREAKING CHANGE:` -> major; `chore:`/`docs:`/`test:` release nothing. The existing history is already conventional.
+- semantic-release owns `CHANGELOG.md` and the `version` field in `package.json` (`@semantic-release/npm` with `npmPublish: false`); never edit either by hand. The release commit is `chore(release): x.y.z [skip ci]`, pushed back to `main` by `@semantic-release/git` — if branch protection is ever enabled on `main`, that push needs a bypass (e.g. a PAT or an app token) or the git plugin must be dropped.
+- No tags exist yet; the first merge to `main` with a releasable commit produces **v1.0.0** (verified via `semantic-release --dry-run`). Nothing was pushed from this session.
+- Vercel deploy is intentionally not done (timebox cut #1, unresolved question in PLAN.md). It needs no config beyond the Next.js preset; the README's deployment section covers the MSW env flag and the in-memory-data caveat that should be repeated in any demo.
+- CI pass/fail on GitHub couldn't be verified from this environment (private repo, no `gh` CLI/auth). The workflow mirrors the local gate exactly; check the Actions tab after the next push.
 
 ## Known gaps to watch
 
