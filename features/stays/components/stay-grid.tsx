@@ -20,7 +20,7 @@ import {
 import { StayCard } from "@/features/stays/components/stay-card";
 import { StayCardSkeleton } from "@/features/stays/components/stay-card.skeleton";
 import type { StaySummary } from "@/features/stays/types/stay";
-import { ApiError } from "@/lib/api/client";
+import { ApiError } from "@/lib/api-client/api-client";
 import { cn } from "@/lib/utils";
 
 const SKELETON_COUNT = 6;

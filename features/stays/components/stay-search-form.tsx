@@ -31,7 +31,10 @@ const MAX_GUESTS = 16;
 const GUEST_LABELS: Record<string, string> = {
   [ANY_GUESTS]: "Any guests",
   ...Object.fromEntries(
-    GUEST_OPTIONS.map((count) => [String(count), `${count} guest${count > 1 ? "s" : ""}`]),
+    GUEST_OPTIONS.map((count) => [
+      String(count),
+      `${count} guest${count > 1 ? "s" : ""}`,
+    ]),
   ),
 };
 
@@ -108,7 +111,10 @@ const StaySearchForm = ({
           />
         </HeroSearchField>
 
-        <HeroSearchField label="Check in" className="hidden sm:flex sm:flex-1 sm:border-r">
+        <HeroSearchField
+          label="Check in"
+          className="hidden sm:flex sm:flex-1 sm:border-r"
+        >
           <input
             type="date"
             value={checkIn}
@@ -118,7 +124,10 @@ const StaySearchForm = ({
           />
         </HeroSearchField>
 
-        <HeroSearchField label="Check out" className="hidden sm:flex sm:flex-1 sm:border-r">
+        <HeroSearchField
+          label="Check out"
+          className="hidden sm:flex sm:flex-1 sm:border-r"
+        >
           <input
             type="date"
             value={checkOut}
@@ -134,17 +143,23 @@ const StaySearchForm = ({
               type="button"
               aria-label="Decrease guests"
               disabled={heroGuests <= MIN_GUESTS}
-              onClick={() => setHeroGuests((count) => Math.max(MIN_GUESTS, count - 1))}
+              onClick={() =>
+                setHeroGuests((count) => Math.max(MIN_GUESTS, count - 1))
+              }
               className="flex size-[22px] items-center justify-center rounded-full border-[1.5px] border-border bg-transparent text-foreground transition-opacity disabled:opacity-35"
             >
               <Minus className="size-3" />
             </button>
-            <span className="min-w-4 text-center text-base font-medium">{heroGuests}</span>
+            <span className="min-w-4 text-center text-base font-medium">
+              {heroGuests}
+            </span>
             <button
               type="button"
               aria-label="Increase guests"
               disabled={heroGuests >= MAX_GUESTS}
-              onClick={() => setHeroGuests((count) => Math.min(MAX_GUESTS, count + 1))}
+              onClick={() =>
+                setHeroGuests((count) => Math.min(MAX_GUESTS, count + 1))
+              }
               className="flex size-[22px] items-center justify-center rounded-full border-[1.5px] border-border bg-transparent text-foreground transition-opacity disabled:opacity-35"
             >
               <Plus className="size-3" />
@@ -153,7 +168,12 @@ const StaySearchForm = ({
         </HeroSearchField>
 
         <div className="flex items-center justify-end p-2 sm:p-2 sm:pl-1">
-          <Button type="submit" variant="accent" size="lg" className="rounded-full px-5">
+          <Button
+            type="submit"
+            variant="accent"
+            size="lg"
+            className="rounded-full px-5"
+          >
             <Search className="size-4.5" />
             Search
           </Button>

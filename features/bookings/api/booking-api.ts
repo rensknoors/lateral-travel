@@ -1,4 +1,4 @@
-import { apiFetch } from "@/lib/api/client";
+import { apiFetch } from "@/lib/api-client/api-client";
 import type { Booking, CreateBookingRequest } from "@/features/bookings/types/booking";
 
 export const createBooking = (request: CreateBookingRequest) =>

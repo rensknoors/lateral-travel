@@ -338,9 +338,15 @@ The detail page should combine product storytelling with booking utility. The st
 - User can inspect the stay and start a checkout.
 - Missing stay ids render a clear not-found state.
 
-## Phase 9: Reviews And Comments
+## Phase 9: Reviews And Comments (Done)
 
 **Goal:** satisfy review list and add-review requirements with useful validation.
+
+**Status:** Done.
+
+**Verification:** `pnpm test && pnpm lint && pnpm build` passes. Stay detail page shows the review list (loading/error/empty states) and an add-review form below it; submitting a valid review clears the form and the new review appears at the top of the list via query invalidation.
+
+**Note:** `@hookform/resolvers` was dropped due to an upstream type incompatibility between its `zodResolver` overloads and zod 4.4.x (see `docs/NOTES.md`). Validation instead runs `reviewFormSchema.safeParse` manually in the submit handler and reports errors through React Hook Form's `setError`, keeping the intended Zod-validation UX without the broken glue package.
 
 **Work:**
 

@@ -11,6 +11,8 @@ import {
 } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { ReviewForm } from "@/features/reviews/components/review-form";
+import { ReviewList } from "@/features/reviews/components/review-list";
 import { ReviewSummary } from "@/features/reviews/components/review-summary";
 import { useStayQuery } from "@/features/stays/api/use-stay-queries";
 import { StayAmenities } from "@/features/stays/components/stay-amenities";
@@ -21,14 +23,20 @@ import { StayHeader } from "@/features/stays/components/stay-header";
 import { StayNotFound } from "@/features/stays/components/stay-not-found";
 import { StayPolicies } from "@/features/stays/components/stay-policies";
 import { StayWorkSetup } from "@/features/stays/components/stay-work-setup";
-import { ApiError } from "@/lib/api/client";
+import { ApiError } from "@/lib/api-client/api-client";
 
 interface StayDetailProps {
   stayId: string;
 }
 
 const StayDetail = ({ stayId }: StayDetailProps) => {
-  const { data: stay, isLoading, isError, error, refetch } = useStayQuery(stayId);
+  const {
+    data: stay,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useStayQuery(stayId);
 
   if (isLoading) {
     return <StayDetailSkeleton />;
@@ -91,7 +99,23 @@ const StayDetail = ({ stayId }: StayDetailProps) => {
               policies={stay.policies}
             />
             <Separator />
-            <ReviewSummary rating={stay.rating} reviewCount={stay.reviewCount} />
+            <div className="space-y-6">
+              <ReviewSummary
+                rating={stay.rating}
+                reviewCount={stay.reviewCount}
+              />
+              <ReviewList stayId={stay.id} />
+            </div>
+            <Separator />
+            <section aria-labelledby="add-review-heading">
+              <h2
+                id="add-review-heading"
+                className="font-heading text-xl font-semibold text-foreground"
+              >
+                Write a review
+              </h2>
+              <ReviewForm stayId={stay.id} />
+            </section>
           </div>
 
           <StayAvailabilityPanel stay={stay} />

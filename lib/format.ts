@@ -21,6 +21,13 @@ export const formatMoney = (money: Money) => getCurrencyFormatter(money.currency
 export const formatCompactCount = (count: number) =>
   count >= 1000 ? `${(count / 1000).toFixed(1)}k` : String(count);
 
+const dateFormatter = new Intl.DateTimeFormat("en-US", {
+  month: "long",
+  year: "numeric",
+});
+
+export const formatMonthYear = (isoDate: string) => dateFormatter.format(new Date(isoDate));
+
 export const humanizeLabel = (value: string) =>
   value
     .split("-")

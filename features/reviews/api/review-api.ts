@@ -1,4 +1,4 @@
-import { apiFetch } from "@/lib/api/client";
+import { apiFetch } from "@/lib/api-client/api-client";
 import type { CreateReviewRequest, Review } from "@/features/reviews/types/review";
 
 export const getReviews = (stayId: string) =>
