@@ -179,7 +179,8 @@ first thing cut for time. It's listed under "What I'd do next".
 
 ## LLM Usage
 
-This was built spec-driven, using both Claude Code and Cursor.
+This was built spec-driven, using both Claude Code and Cursor. The UI design
+was created with Claude Design.
 
 - **Spec → plan.** The assessment brief
   ([docs/ASSESSMENT.md](docs/ASSESSMENT.md)) plus my own technical notes went
