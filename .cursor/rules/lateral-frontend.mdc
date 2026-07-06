@@ -1,0 +1,98 @@
+---
+alwaysApply: true
+description: Context about the project setup and structure
+---
+
+## Project
+
+`lateral-travel` — Booking.com-style app for curated remote-work stays. Frontend-only; MSW intercepts `/api/*` (dev + production).
+
+Live: https://lateral-travel.vercel.app
+
+## Tech stack
+
+- **Framework**: Next.js 16 (App Router), React 19, TypeScript (strict)
+- **Package manager**: pnpm (npm/yarn/bun also work)
+- **Styling**: Tailwind CSS v4
+- **UI**: shadcn/ui primitives in `components/ui/` (built on `@base-ui/react`)
+- **Server state**: TanStack Query v5 — no Redux, RTK Query, or Zustand
+- **Forms**: React Hook Form + Zod (user input only)
+- **API mock**: MSW 2.x
+- **Testing**: Vitest + Testing Library; colocated `*.spec.ts(x)`
+- **Lint**: oxlint
+
+## Project structure
+
+Single Next.js app — **not** an Nx monorepo. Import alias: `@/*` → repo root.
+
+```
+app/                    # routes only — thin page shells + Suspense
+  page.tsx              # /
+  stays/[stayId]/       # stay detail
+  checkout/
+  bookings/[bookingId]/ # confirmation
+
+features/               # one folder per domain
+  stays/ | reviews/ | bookings/ | home/
+  api/types/            # shared ApiError types
+  <domain>/
+    api/                # *-api.ts (apiFetch) + use-*-queries.ts (TanStack hooks)
+    components/         # screens + UI; *.skeleton.tsx for loading states
+    domain/ | utils/    # plain business logic — no React, no HTTP
+    types/              # request/response shapes (API contract, client + mock)
+    hooks/              # domain hooks (e.g. URL-driven filter state)
+
+components/
+  ui/                   # shared shadcn primitives
+  layout/               # site-header, page-shell, content-container
+
+lib/                    # api-client, format helpers, cn()
+mocks/                  # handlers → repositories → seeded in-memory data
+tests/                  # shared test setup (MSW server, renderWithQueryClient)
+```
+
+## Architecture
+
+**Data flow (one direction):**
+
+`component → query hook → *-api.ts → apiFetch → HTTP → MSW handler → repository → domain logic`
+
+**Do:**
+
+- Keep `app/` pages thin — compose `features/*/components`, wrap async UI in `<Suspense>`
+- Put HTTP in `features/<domain>/api/*-api.ts`; TanStack hooks in `use-*-queries.ts` with `queryKey` factories
+- Share types via `features/<domain>/types/` — same shapes on client and mock server
+- Keep pricing, filtering, sorting as plain functions in `domain/` or `utils/`
+- Store search/filter state in the URL (`useSearchParams`), not component state
+- Throw `ApiError` from `lib/api-client/api-client.ts` on failed requests
+- Use Zod for form schemas only; trust API responses via TypeScript types
+
+**Don't:**
+
+- Build URLs or read mock data directly from components
+- Add global state — TanStack Query caches server data, RHF owns forms
+- Parse API responses with Zod
+- Put testable business logic inside components or MSW handlers
+
+## Testing
+
+- MSW runs globally (`tests/setup.ts`); unhandled requests fail tests
+- Use `renderWithQueryClient` from `@/tests/render-with-query-client` for components using queries
+- Override handlers per test with `server.use(...)` when needed
+- Prefer accessible queries (`getByRole`, `getByLabelText`) and `userEvent.setup()`
+- Domain/utils: test plain functions directly; no MSW needed
+
+## Commands
+
+| Script | Purpose |
+|--------|---------|
+| `pnpm dev` | Dev server (MSW auto-starts) |
+| `pnpm lint` | oxlint |
+| `pnpm typecheck` | `tsc --noEmit` |
+| `pnpm test` | vitest run |
+| `pnpm build` | production build |
+
+## Related rules
+
+- `react-typescript.mdc` — TS/React naming, hooks, styling conventions
+- `react-testing.mdc` — additional test style guidance (prefer patterns in existing `*.spec.tsx` files when they differ)
