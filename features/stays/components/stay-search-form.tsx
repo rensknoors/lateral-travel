@@ -103,6 +103,7 @@ const StaySearchForm = ({
       >
         <HeroSearchField label="Where" className="sm:flex-[2] sm:border-r">
           <input
+            name="query"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Destination, city, property"
@@ -117,6 +118,7 @@ const StaySearchForm = ({
         >
           <input
             type="date"
+            name="checkIn"
             value={checkIn}
             onChange={(event) => setCheckIn(event.target.value)}
             aria-label="Check in"
@@ -130,6 +132,7 @@ const StaySearchForm = ({
         >
           <input
             type="date"
+            name="checkOut"
             value={checkOut}
             onChange={(event) => setCheckOut(event.target.value)}
             aria-label="Check out"
@@ -150,7 +153,10 @@ const StaySearchForm = ({
             >
               <Minus className="size-3" />
             </button>
-            <span className="min-w-4 text-center text-base font-medium">
+            <span
+              aria-live="polite"
+              className="min-w-4 text-center text-base font-medium"
+            >
               {heroGuests}
             </span>
             <button
@@ -189,6 +195,7 @@ const StaySearchForm = ({
     >
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-[2fr_1.4fr_1fr_auto]">
         <Input
+          name="query"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           placeholder="Search by name, city, or vibe"
@@ -196,6 +203,7 @@ const StaySearchForm = ({
           className="h-11"
         />
         <Input
+          name="location"
           value={location}
           onChange={(event) => setLocation(event.target.value)}
           placeholder="Location"

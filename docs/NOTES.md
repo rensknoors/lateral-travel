@@ -4,7 +4,7 @@ Concise handover notes for the next agent working on this assessment.
 
 ## Current state
 
-Phases 1-12 of [docs/PLAN.md](PLAN.md) are done. Quality gate to run before any work:
+Phases 1-13 of [docs/PLAN.md](PLAN.md) are done. Quality gate to run before any work:
 
 ```bash
 pnpm test && pnpm lint && pnpm build
@@ -33,6 +33,16 @@ The same gate runs in CI (`.github/workflows/ci.yml`) on pushes to `main`/`devel
 - MSW's `server.resetHandlers()` (in `tests/setup.ts`) resets handler overrides but **not** repository state — `bookingsById` and stay favorite flags persist across tests within one spec file. Don't assert on "no bookings exist"; create what you need and assert on it.
 - `checkoutFormSchema` validation is covered in `features/bookings/utils/checkout-schema.spec.ts`. Note the mock booking endpoint itself trusts its payload (no runtime validation, per the compile-time-contracts decision in PLAN.md) — an unknown `stayId` is the only rejected case (404).
 - CI (`.github/workflows/ci.yml`) uses pnpm 10 + Node 22 and runs lint, test, build. If you add Playwright later, give it a separate job so unit feedback stays fast.
+
+## Phase 13 (accessibility and UX polish) handover
+
+- The `<main id="main-content">` landmark lives in `app/layout.tsx` (wrapping `children`), **not** in `PageShell` — the refactored pages stopped using `PageShell`, so putting it there left every page without a main landmark. If a new page needs its own `<main>`, remove the layout-level one first; never render two.
+- Skip link gotcha: Tailwind v4 does not generate `focus:not-sr-only` (the v4 `not-` variant prefix shadows the `not-sr-only` utility — the rule silently never appears in the stylesheet). The skip link in `app/layout.tsx` uses `-translate-y-24` + `focus-visible:translate-y-0` instead. Reuse that pattern for any future visually-hidden-until-focus element.
+- `globals.css` has a global `prefers-reduced-motion: reduce` override that flattens all animations/transitions and disables smooth scroll (`html` uses `motion-safe:scroll-smooth`). New animations don't need per-component reduced-motion handling unless they animate something the override can't neutralize.
+- Form error pattern (used by both review and checkout forms): manual `schema.safeParse` in submit, `setError` per issue, `setFocus` on the first errored field, inline `<p role="alert">` linked via `aria-describedby`, `aria-invalid` on the control. The review rating radiogroup is skipped by `setFocus` because its radios are not `register`-ed.
+- Async status announcements: the filter bar result count and the hero guest stepper count have `aria-live="polite"`; the availability quote region already had it. Keep new async status text in one of these regions or add its own.
+- `next/image` in this Next 16 install: `priority` is deprecated — use `preload` (see `stay-gallery.tsx`). The build does not warn loudly, so grep before adding new hero images.
+- Amenity filter chips are raw `<button>`s and need explicit `outline-none focus-visible:ring-3 focus-visible:ring-ring/50` (done); shared `Button`/`Input` primitives already handle their own focus styles.
 
 ## Known gaps to watch
 

@@ -70,7 +70,10 @@ const StayFilterBar = ({
   return (
     <div className="flex flex-col gap-4 border-b border-border pb-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+        <p
+          aria-live="polite"
+          className="flex items-center gap-2 text-sm font-medium text-muted-foreground"
+        >
           <SlidersHorizontal className="size-4" aria-hidden />
           {resultCount === undefined
             ? "Searching stays…"
@@ -143,7 +146,7 @@ const StayFilterBar = ({
                 aria-pressed={isActive}
                 onClick={() => onAmenityToggle(amenity)}
                 className={cn(
-                  "rounded-full border px-3 py-1 text-xs font-medium transition-colors",
+                  "rounded-full border px-3 py-1 text-xs font-medium transition-colors outline-none focus-visible:ring-3 focus-visible:ring-ring/50",
                   isActive
                     ? "border-primary bg-primary text-primary-foreground"
                     : "border-border bg-background text-muted-foreground hover:text-foreground",

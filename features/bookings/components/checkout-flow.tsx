@@ -84,7 +84,7 @@ const CheckoutLoading = () => (
   <ContentContainer size="lg" className="py-14">
     <Card>
       <CardHeader>
-        <CardTitle>Preparing checkout...</CardTitle>
+        <CardTitle>Preparing checkout…</CardTitle>
         <CardDescription>Confirming the latest availability and price.</CardDescription>
       </CardHeader>
     </Card>
@@ -402,7 +402,7 @@ const CheckoutFlow = ({
                 size="lg"
                 disabled={isCreatingBooking}
               >
-                {isCreatingBooking ? "Completing..." : "Complete booking"}
+                {isCreatingBooking ? "Completing…" : "Complete booking"}
               </Button>
             </CardFooter>
           </Card>

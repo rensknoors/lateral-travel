@@ -44,7 +44,7 @@ const BookingConfirmationLoading = () => (
   <ContentContainer size="md" className="py-14">
     <Card>
       <CardHeader>
-        <CardTitle>Loading confirmation...</CardTitle>
+        <CardTitle>Loading confirmation…</CardTitle>
         <CardDescription>Fetching the booking details.</CardDescription>
       </CardHeader>
     </Card>

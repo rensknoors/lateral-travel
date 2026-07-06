@@ -47,7 +47,7 @@ const StayGallery = ({ name, imageUrls }: StayGalleryProps) => {
             src={imageUrls[0]}
             alt={name}
             fill
-            priority
+            preload
             sizes="(min-width: 1024px) 66vw, 100vw"
             className="object-cover transition-transform duration-300 hover:scale-[1.02]"
           />

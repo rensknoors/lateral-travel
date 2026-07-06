@@ -34,6 +34,7 @@ const ReviewForm = ({ stayId }: ReviewFormProps) => {
     watch,
     setValue,
     setError,
+    setFocus,
     reset,
     formState: { errors },
   } = useForm<ReviewFormValues>({
@@ -46,9 +47,17 @@ const ReviewForm = ({ stayId }: ReviewFormProps) => {
     const result = reviewFormSchema.safeParse(values);
 
     if (!result.success) {
+      const firstField = result.error.issues[0]?.path[0] as
+        | keyof ReviewFormValues
+        | undefined;
+
       for (const issue of result.error.issues) {
         const field = issue.path[0] as keyof ReviewFormValues;
         setError(field, { message: issue.message });
+      }
+
+      if (firstField && firstField !== "rating") {
+        setFocus(firstField);
       }
       return;
     }
@@ -71,6 +80,7 @@ const ReviewForm = ({ stayId }: ReviewFormProps) => {
         </label>
         <Input
           id="review-author"
+          autoComplete="name"
           placeholder="Your name"
           aria-invalid={Boolean(errors.authorName)}
           aria-describedby={
@@ -79,7 +89,7 @@ const ReviewForm = ({ stayId }: ReviewFormProps) => {
           {...register("authorName")}
         />
         {errors.authorName && (
-          <p id="review-author-error" className="text-sm text-destructive">
+          <p id="review-author-error" role="alert" className="text-sm text-destructive">
             {errors.authorName.message}
           </p>
         )}
@@ -123,7 +133,7 @@ const ReviewForm = ({ stayId }: ReviewFormProps) => {
           ))}
         </div>
         {errors.rating && (
-          <p id="review-rating-error" className="text-sm text-destructive">
+          <p id="review-rating-error" role="alert" className="text-sm text-destructive">
             {errors.rating.message}
           </p>
         )}
@@ -135,14 +145,14 @@ const ReviewForm = ({ stayId }: ReviewFormProps) => {
         </label>
         <Textarea
           id="review-comment"
-          placeholder="Share what stood out about your stay..."
+          placeholder="Share what stood out about your stay…"
           rows={4}
           aria-invalid={Boolean(errors.comment)}
           aria-describedby={errors.comment ? "review-comment-error" : undefined}
           {...register("comment")}
         />
         {errors.comment && (
-          <p id="review-comment-error" className="text-sm text-destructive">
+          <p id="review-comment-error" role="alert" className="text-sm text-destructive">
             {errors.comment.message}
           </p>
         )}
@@ -162,7 +172,7 @@ const ReviewForm = ({ stayId }: ReviewFormProps) => {
         disabled={isPending}
         className="self-start"
       >
-        {isPending ? "Submitting..." : "Submit review"}
+        {isPending ? "Submitting…" : "Submit review"}
       </Button>
     </form>
   );

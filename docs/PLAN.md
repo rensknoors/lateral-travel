@@ -464,9 +464,15 @@ Pricing, filtering and validation are high-risk areas. Testing those gives bette
 - Tests run through `pnpm test`.
 - CI runs lint, tests and build.
 
-## Phase 13: Accessibility And UX Polish
+## Phase 13: Accessibility And UX Polish (Done)
 
 **Goal:** make the app feel complete and usable.
+
+**Status:** Done.
+
+**Verification:** `pnpm test && pnpm lint && pnpm build` passes (75 tests). Audited all form/browse/detail/checkout components against Web Interface Guidelines. Manually verified in-browser: skip link slides in on keyboard focus and jumps to the `<main>` landmark; review form shows inline `role="alert"` errors and focuses the first invalid field; browse, detail and checkout render without horizontal overflow at 375px; no console errors.
+
+**Note:** The refactored pages no longer used `PageShell`, so no page had a `<main>` landmark — `app/layout.tsx` now wraps `children` in `<main id="main-content">` and adds a skip link. Tailwind v4 does not generate `focus:not-sr-only` (the `not-` variant prefix shadows it); the skip link uses an offscreen-translate pattern instead. A global `prefers-reduced-motion` override was added to `globals.css`, and the deprecated `next/image` `priority` prop was replaced with `preload` per Next 16 docs.
 
 **Work:**
 

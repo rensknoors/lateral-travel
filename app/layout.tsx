@@ -28,11 +28,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full scroll-smooth">
+    <html lang="en" className="h-full motion-safe:scroll-smooth">
       <body className="flex min-h-dvh flex-col bg-background text-foreground antialiased">
+        <a
+          href="#main-content"
+          className="absolute top-4 left-4 z-50 -translate-y-24 rounded-md bg-card px-4 py-2 text-sm font-medium whitespace-nowrap text-foreground shadow-lg ring-1 ring-border transition-transform focus-visible:translate-y-0"
+        >
+          Skip to main content
+        </a>
         <Providers>
           <SiteHeader />
-          {children}
+          <main id="main-content" className="flex flex-1 flex-col">
+            {children}
+          </main>
           <SiteFooter />
         </Providers>
       </body>
