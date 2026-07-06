@@ -4,7 +4,7 @@ Concise handover notes for the next agent working on this assessment.
 
 ## Current state
 
-Phases 1-14 of [docs/PLAN.md](PLAN.md) are done. Quality gate to run before any work:
+All 15 phases of [docs/PLAN.md](PLAN.md) are done — the project is submission-ready. Quality gate to run before any work:
 
 ```bash
 pnpm test && pnpm lint && pnpm build
@@ -53,6 +53,14 @@ The same gate runs in CI (`.github/workflows/ci.yml`) on pushes to `main`/`devel
 - No tags exist yet; the first merge to `main` with a releasable commit produces **v1.0.0** (verified via `semantic-release --dry-run`). Nothing was pushed from this session.
 - Vercel deploy is intentionally not done (timebox cut #1, unresolved question in PLAN.md). It needs no config beyond the Next.js preset; the README's deployment section covers the MSW env flag and the in-memory-data caveat that should be repeated in any demo.
 - CI pass/fail on GitHub couldn't be verified from this environment (private repo, no `gh` CLI/auth). The workflow mirrors the local gate exactly; check the Actions tab after the next push.
+
+## Phase 15 (documentation and presentation) handover
+
+- README is the submission artifact: setup, architecture, API table, testing strategy, tradeoffs, next steps and the LLM usage note. The owner wants docs **concise** — interviewers won't read 15 minutes of documentation. Don't grow it; tighten it.
+- The tradeoffs section frames time honestly: active hands-on time roughly within the 4-6h box, wall-clock longer because agent sessions ran unattended. Keep that framing consistent everywhere (README, DEMO.md, the recording).
+- `docs/DEMO.md` is a timed 5-minute outline with a click path per section and a likely-questions appendix — it references the two "what broke" stories (dev-only MSW, Tailwind v4 `focus:not-sr-only`) as interview material.
+- Production deployment: https://lateral-travel.vercel.app (Vercel project `lateral-travel` under `rensknoors-projects`, default Next.js preset, deployed via `vercel deploy --prod`). `.vercel/` and `.env.local` are gitignored artifacts of `vercel link`. Redeploy = `npx vercel deploy --prod --yes`; consider enabling the Vercel git integration so merges to `main` deploy automatically.
+- The live site was smoke-tested over HTTP (page + `mockServiceWorker.js` both 200). Before recording the demo, click through the booking flow once on the live URL in a real browser.
 
 ## Known gaps to watch
 
