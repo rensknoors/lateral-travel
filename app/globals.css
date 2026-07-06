@@ -17,3 +17,12 @@
     color: var(--accent-foreground);
   }
 }
+
+@layer utilities {
+  .image-treatment {
+    border: 1px solid color-mix(in oklch, var(--border), transparent 20%);
+    border-radius: var(--radius-card);
+    box-shadow: 0 22px 70px rgb(var(--shadow-color) / 0.16);
+    object-fit: cover;
+  }
+}

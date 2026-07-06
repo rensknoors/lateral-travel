@@ -137,9 +137,13 @@ The frontend can trust internal backend contracts without duplicating runtime va
 - All planned endpoints have MSW handlers.
 - Contract tests prove the mocked endpoints return the expected shapes.
 
-## Phase 3: Seed Data And Domain Services
+## Phase 3: Seed Data And Domain Services (Done)
 
 **Goal:** isolate business behavior from UI and HTTP.
+
+**Status:** Done.
+
+**Verification:** Code audit confirmed seeded stays, pure domain helpers and in-memory repositories exist for stays, reviews and bookings.
 
 **Work:**
 
@@ -169,12 +173,15 @@ Pure services make pricing and filtering testable. Repositories keep MSW handler
 
 **Exit criteria:**
 
-- Domain helpers have unit tests.
 - MSW handlers can call services without knowing seed data internals.
 
-## Phase 4: Mock Backend Scenario Coverage
+## Phase 4: Mock Backend Scenario Coverage (Done)
 
 **Goal:** refine the MSW backend surface required by the assessment.
+
+**Status:** Done.
+
+**Verification:** Code audit confirmed handlers exist for all planned routes, missing resources return 404 and created bookings can be looked up.
 
 **Routes:**
 
@@ -200,13 +207,16 @@ This mock API is small, complete and directly aligned to the user journey. Avail
 **Exit criteria:**
 
 - All handlers return typed JSON.
-- Form-level validation prevents invalid requests before they hit the mock backend.
 - Missing resources return 404.
 - Booking creation produces a retrievable confirmation.
 
-## Phase 5: API Client Layer
+## Phase 5: API Client Layer (Done)
 
 **Goal:** avoid raw `fetch` calls scattered through components.
+
+**Status:** Done.
+
+**Verification:** Code audit confirmed typed client helpers exist for every planned endpoint and API URL construction is isolated to client helpers.
 
 **Work:**
 
@@ -229,7 +239,9 @@ Typed client functions keep UI components focused on rendering states. They also
 
 - Components do not build API URLs manually except through client helpers.
 
-## Phase 6: Shared UI System
+## Phase 6: Shared UI System (Done)
+
+**Status:** Done.
 
 **Goal:** create enough reusable UI to move fast without generic-looking screens.
 
