@@ -1,7 +1,7 @@
 "use client";
 
 import { SlidersHorizontal, X } from "lucide-react";
-import { useEffect, useState, type FocusEvent } from "react";
+import { useEffect, useState, type FocusEvent, type KeyboardEvent } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -57,13 +57,25 @@ const StayFilterBar = ({
     setMaxPrice(filters.maxPrice?.toString() ?? "");
   }, [filters.minPrice, filters.maxPrice]);
 
-  const commitPriceRange = (event: FocusEvent<HTMLInputElement>) => {
+  const commitPriceRange = () => {
     const nextMin = minPrice ? Number(minPrice) : undefined;
     const nextMax = maxPrice ? Number(maxPrice) : undefined;
 
     if (nextMin === filters.minPrice && nextMax === filters.maxPrice) return;
 
     onPriceChange({ minPrice: nextMin, maxPrice: nextMax });
+  };
+
+  const handlePriceBlur = (event: FocusEvent<HTMLInputElement>) => {
+    commitPriceRange();
+    event.currentTarget.blur();
+  };
+
+  const handlePriceKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key !== "Enter") return;
+
+    event.preventDefault();
+    commitPriceRange();
     event.currentTarget.blur();
   };
 
@@ -117,7 +129,8 @@ const StayFilterBar = ({
             className="h-8 w-24"
             value={minPrice}
             onChange={(event) => setMinPrice(event.target.value)}
-            onBlur={commitPriceRange}
+            onBlur={handlePriceBlur}
+            onKeyDown={handlePriceKeyDown}
           />
           <span className="text-sm text-muted-foreground">to</span>
           <Input
@@ -129,7 +142,8 @@ const StayFilterBar = ({
             className="h-8 w-24"
             value={maxPrice}
             onChange={(event) => setMaxPrice(event.target.value)}
-            onBlur={commitPriceRange}
+            onBlur={handlePriceBlur}
+            onKeyDown={handlePriceKeyDown}
           />
           <span className="text-sm text-muted-foreground">/ night</span>
         </div>
