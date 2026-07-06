@@ -62,18 +62,20 @@ export type StaySummary = {
   location: string;
   country: string;
   tagline: string;
-  heroImageUrl: string;
+  imageUrls: string[];
   pricePerNight: Money;
   rating: number;
   reviewCount: number;
   maxGuests: number;
   amenities: StayAmenity[];
   workSetup: WorkSetup;
+  isFavorited: boolean;
+  isSuperhost: boolean;
+  isNew: boolean;
 };
 
 export type Stay = StaySummary & {
   description: string;
-  imageUrls: string[];
   bedrooms: number;
   bathrooms: number;
   checkInTime: string;
@@ -84,11 +86,16 @@ export type Stay = StaySummary & {
 export type StayListFilters = {
   query?: string;
   location?: string;
+  category?: StayCategory;
   guests?: number;
   minPrice?: number;
   maxPrice?: number;
   amenities?: StayAmenity[];
   sort?: StaySortOption;
+};
+
+export type StayFavoriteUpdate = {
+  isFavorited: boolean;
 };
 
 export type StayListResponse = {

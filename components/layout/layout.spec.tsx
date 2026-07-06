@@ -11,13 +11,12 @@ describe("layout components", () => {
     render(<SiteHeader />);
 
     expect(
-      screen.getByRole("link", { name: /lateral travel/i })
+      screen.getByRole("link", { name: /lateral travel/i }),
     ).toHaveAttribute("href", "/");
     expect(screen.getByRole("navigation")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /browse stays/i })).toHaveAttribute(
-      "href",
-      "/"
-    );
+    expect(
+      screen.getAllByRole("link", { name: /^stays$/i })[0],
+    ).toHaveAttribute("href", "/");
   });
 
   it("renders a page shell with accessible main content and actions", () => {
@@ -29,17 +28,17 @@ describe("layout components", () => {
         actions={<Link href="/stays">Browse stays</Link>}
       >
         <p>Page content</p>
-      </PageShell>
+      </PageShell>,
     );
 
     expect(screen.getByRole("main")).toHaveTextContent("Page content");
     expect(
-      screen.getByRole("heading", { name: "Remote-ready stays" })
+      screen.getByRole("heading", { name: "Remote-ready stays" }),
     ).toBeInTheDocument();
     expect(screen.getByText("Field notes")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Browse stays" })).toHaveAttribute(
       "href",
-      "/stays"
+      "/stays",
     );
   });
 
@@ -47,7 +46,7 @@ describe("layout components", () => {
     render(
       <ContentContainer className="custom-shell" data-testid="container">
         Contained
-      </ContentContainer>
+      </ContentContainer>,
     );
 
     expect(screen.getByTestId("container")).toHaveClass("mx-auto");

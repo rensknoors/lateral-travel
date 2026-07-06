@@ -17,6 +17,8 @@ const REVIEW_RATINGS = [4, 5] as const satisfies Review["rating"][];
 const createStayImages = (seed: string) => [
   `https://picsum.photos/seed/${seed}/1200/800`,
   `https://picsum.photos/seed/${seed}-2/1200/800`,
+  `https://picsum.photos/seed/${seed}-3/1200/800`,
+  `https://picsum.photos/seed/${seed}-4/1200/800`,
 ];
 
 export const createStay = (overrides: Partial<Stay> & { id: string }): Stay => {
@@ -28,7 +30,6 @@ export const createStay = (overrides: Partial<Stay> & { id: string }): Stay => {
     location: faker.location.city(),
     country: faker.location.country(),
     tagline: faker.company.catchPhrase(),
-    heroImageUrl: imageUrls[0],
     imageUrls,
     pricePerNight: {
       amount: faker.number.int({ min: 145, max: 245 }),
@@ -44,6 +45,9 @@ export const createStay = (overrides: Partial<Stay> & { id: string }): Stay => {
       quietScore: faker.number.int({ min: 85, max: 99 }),
       hasMonitor: faker.datatype.boolean(),
     },
+    isFavorited: false,
+    isSuperhost: faker.datatype.boolean({ probability: 0.4 }),
+    isNew: faker.datatype.boolean({ probability: 0.25 }),
     description: faker.lorem.sentences({ min: 2, max: 3 }),
     bedrooms: faker.number.int({ min: 1, max: 2 }),
     bathrooms: faker.number.int({ min: 1, max: 2 }),

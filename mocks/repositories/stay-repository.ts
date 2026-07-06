@@ -25,6 +25,18 @@ export const listStays = (filters: StayListFilters = {}): StayListResponse => {
 export const getStayById = (stayId: string) =>
   mockStays.find((stay) => stay.id === stayId);
 
+export const setStayFavorite = (stayId: string, isFavorited: boolean) => {
+  const stay = getStayById(stayId);
+
+  if (!stay) {
+    return undefined;
+  }
+
+  stay.isFavorited = isFavorited;
+
+  return toStaySummary(stay);
+};
+
 export const getAvailabilityQuote = ({
   stayId,
   checkIn,

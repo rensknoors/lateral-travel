@@ -1,52 +1,131 @@
-import Link from "next/link";
+"use client";
 
-import { buttonVariants } from "@/components/ui/button";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+
 import { ContentContainer } from "@/components/layout/content-container";
+import { cn } from "@/lib/utils";
 
 const primaryNavigation = [
-  { href: "/", label: "Browse stays" },
+  { href: "/", label: "Stays" },
   { href: "/bookings", label: "Bookings" },
 ] as const;
 
-const SiteHeader = () => (
-  <header className="sticky top-0 z-40 border-b border-border/70 bg-background/90 backdrop-blur-md">
-    <ContentContainer className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 py-3">
-      <Link
-        href="/"
-        className="group flex items-center gap-3 font-serif text-xl tracking-tight text-foreground"
-      >
-        <span className="grid size-9 place-items-center rounded-full bg-primary text-sm font-sans font-semibold text-primary-foreground shadow-[0_10px_30px_rgb(var(--shadow-color)/0.14)] transition-transform group-hover:-translate-y-0.5">
-          LT
-        </span>
-        <span>Lateral Travel</span>
-      </Link>
-
-      <nav
-        aria-label="Primary navigation"
-        className="order-last flex basis-full items-center gap-5 border-t border-border/70 pt-3 text-sm font-medium text-muted-foreground md:order-none md:basis-auto md:border-0 md:pt-0"
-      >
-        {primaryNavigation.map(({ href, label }) => (
-          <Link
-            key={href}
-            href={href}
-            className="transition-colors hover:text-foreground"
-          >
-            {label}
-          </Link>
-        ))}
-      </nav>
-
-      <Link
-        href="/"
-        className={buttonVariants({
-          size: "sm",
-          className: "hidden sm:inline-flex",
-        })}
-      >
-        Find a stay
-      </Link>
-    </ContentContainer>
-  </header>
+const LogoMark = ({ accentColor }: { accentColor: string }) => (
+  <svg viewBox="0 0 40 40" fill="none" aria-hidden className="size-5">
+    <line
+      x1="8"
+      y1="20"
+      x2="30"
+      y2="20"
+      stroke="white"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+    />
+    <polyline
+      points="23,13.5 30.5,20 23,26.5"
+      fill="none"
+      stroke="white"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <circle cx="8.5" cy="20" r="3.5" fill={accentColor} />
+  </svg>
 );
+
+const SiteHeader = () => {
+  const pathname = usePathname();
+  const isHome = pathname === "/";
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const isTransparent = isHome && !scrolled;
+
+  return (
+    <header
+      className={cn(
+        "sticky top-0 z-40 h-16 transition-[background-color,box-shadow,border-color] duration-250",
+        isTransparent
+          ? "border-b border-transparent bg-transparent"
+          : "border-b border-border/70 bg-card/95 shadow-sm backdrop-blur-md",
+      )}
+    >
+      <ContentContainer
+        size="xl"
+        className="flex h-full items-center justify-between gap-6"
+      >
+        <Link
+          href="/"
+          className="group flex shrink-0 items-center gap-2.5 outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+        >
+          <div
+            className={cn(
+              "flex size-8 items-center justify-center rounded-lg transition-colors",
+              isTransparent ? "bg-white/18" : "bg-primary",
+            )}
+          >
+            <LogoMark
+              accentColor={isTransparent ? "rgba(239,98,48,0.85)" : "#EF6230"}
+            />
+          </div>
+          <div>
+            <div
+              className={cn(
+                "font-serif text-lg leading-none tracking-[-0.02em]",
+                isTransparent ? "text-white" : "text-foreground",
+              )}
+            >
+              Lateral
+            </div>
+            <div
+              className={cn(
+                "mt-0.5 text-[9px] font-medium tracking-[2.2px] uppercase",
+                isTransparent ? "text-white/60" : "text-muted-foreground",
+              )}
+            >
+              Travel
+            </div>
+          </div>
+        </Link>
+
+        <nav
+          aria-label="Primary navigation"
+          className="flex items-center gap-1"
+        >
+          {primaryNavigation.map(({ href, label }) => {
+            const isActive = pathname === href;
+
+            return (
+              <Link
+                key={href}
+                href={href}
+                className={cn(
+                  "rounded-md px-3 py-1.5 text-sm transition-colors",
+                  isActive
+                    ? isTransparent
+                      ? "font-medium text-white"
+                      : "bg-accent font-medium text-primary"
+                    : isTransparent
+                      ? "text-white/90 hover:text-white"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                )}
+              >
+                {label}
+              </Link>
+            );
+          })}
+        </nav>
+      </ContentContainer>
+    </header>
+  );
+};
 
 export { SiteHeader };

@@ -2,17 +2,22 @@ import { http, HttpResponse } from "msw";
 
 import {
   STAY_AMENITIES,
+  STAY_CATEGORIES,
   STAY_SORT_OPTIONS,
   type Stay,
   type StayAmenity,
+  type StayCategory,
+  type StayFavoriteUpdate,
   type StayListFilters,
   type StaySortOption,
+  type StaySummary,
 } from "@/features/stays/types/stay";
 import { notFound } from "@/mocks/handlers/helpers";
 import {
   getAvailabilityQuote,
   getStayById,
   listStays,
+  setStayFavorite,
 } from "@/mocks/repositories/stay-repository";
 
 const getNumberParam = (url: URL, name: string) => {
@@ -40,9 +45,18 @@ const parseSort = (url: URL): StaySortOption | undefined => {
     : undefined;
 };
 
+const parseCategory = (url: URL): StayCategory | undefined => {
+  const category = url.searchParams.get("category");
+
+  return STAY_CATEGORIES.includes(category as StayCategory)
+    ? (category as StayCategory)
+    : undefined;
+};
+
 const parseStayListFilters = (url: URL): StayListFilters => ({
   query: url.searchParams.get("query") ?? undefined,
   location: url.searchParams.get("location") ?? undefined,
+  category: parseCategory(url),
   guests: getNumberParam(url, "guests"),
   minPrice: getNumberParam(url, "minPrice"),
   maxPrice: getNumberParam(url, "maxPrice"),
@@ -65,6 +79,17 @@ export const stayHandlers = [
     }
 
     return HttpResponse.json<Stay>(stay);
+  }),
+
+  http.put("*/api/stays/:stayId/favorite", async ({ params, request }) => {
+    const { isFavorited } = (await request.json()) as StayFavoriteUpdate;
+    const stay = setStayFavorite(String(params.stayId), Boolean(isFavorited));
+
+    if (!stay) {
+      return notFound("Stay not found.");
+    }
+
+    return HttpResponse.json<StaySummary>(stay);
   }),
 
   http.get("*/api/stays/:stayId/availability", ({ params, request }) => {

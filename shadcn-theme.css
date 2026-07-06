@@ -20,6 +20,12 @@
    popovers, and badges (6px). Apply --radius-card / --radius-modal
    directly on Card / Dialog via className, e.g. rounded-[14px].
 
+   SHADOW NOTE
+   The @theme block overrides Tailwind's default shadow scale
+   with the DS ocean-tinted shadows (derived from ocean-900
+   #0D2F3B) so shadow-xs…shadow-2xl utilities match the design
+   system with no per-component changes.
+
    DARK MODE
    The brand brief only specifies a light UI. The .dark block
    below is an original derivation (ocean-900 base) for teams
@@ -37,7 +43,7 @@
   --font-serif: "DM Serif Display", Georgia, "Times New Roman", serif;
   --font-mono: "JetBrains Mono", ui-monospace, "Courier New", monospace;
 
-  --background: #fbf7f1;
+  --background: #ffffff;
   --foreground: #14222b;
 
   --card: #ffffff;
@@ -47,6 +53,7 @@
 
   --primary: #1a7290; /* ocean-600 */
   --primary-foreground: #ffffff;
+  --primary-hover: #185b74; /* ocean-700 — DS --brand-primary-hover */
 
   --secondary: #ecf0f4; /* slate-100 */
   --secondary-foreground: #14222b;
@@ -87,6 +94,9 @@
   --success-foreground: #ffffff;
   --warning: #f4b942;
   --warning-foreground: #473615;
+  --gold: #f4b942; /* gold-500 — star ratings only */
+  --warm: #faf4e4; /* sand-100 — warm surfaces, warm badges */
+  --warm-foreground: #8f7128; /* sand-700 */
   --shadow-color: 13 47 59; /* ocean-900, for tinted shadows: rgb(var(--shadow-color) / .1) */
 }
 
@@ -101,6 +111,7 @@
 
   --primary: #3ca2c4; /* ocean-400 — lighter for contrast on dark */
   --primary-foreground: #0d2f3b;
+  --primary-hover: #6bbcd8; /* ocean-300 */
 
   --secondary: #185b74; /* ocean-700 */
   --secondary-foreground: #ecf0f4;
@@ -140,6 +151,9 @@
   --success-foreground: #0d2f3b;
   --warning: #f4b942;
   --warning-foreground: #0d2f3b;
+  --gold: #f4b942;
+  --warm: #473615; /* sand-900 */
+  --warm-foreground: #e6d4a0; /* sand-300 */
   --shadow-color: 0 0 0;
 }
 
@@ -152,6 +166,7 @@
   --color-popover-foreground: var(--popover-foreground);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+  --color-primary-hover: var(--primary-hover);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
@@ -177,6 +192,17 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
+  --color-brand-accent: var(--brand-accent);
+  --color-brand-accent-hover: var(--brand-accent-hover);
+  --color-brand-accent-foreground: var(--brand-accent-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-gold: var(--gold);
+  --color-warm: var(--warm);
+  --color-warm-foreground: var(--warm-foreground);
+
   --font-sans: var(--font-sans);
   --font-serif: var(--font-serif);
   --font-mono: var(--font-mono);
@@ -189,6 +215,26 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* DS ocean-tinted shadow scale (tokens/effects.css) — overrides
+     Tailwind defaults so shadow-* utilities match the design system */
+  --shadow-2xs: 0 1px 2px rgb(var(--shadow-color) / 0.06);
+  --shadow-xs: 0 1px 2px rgb(var(--shadow-color) / 0.06);
+  --shadow-sm:
+    0 1px 3px rgb(var(--shadow-color) / 0.08),
+    0 1px 2px rgb(var(--shadow-color) / 0.04);
+  --shadow-md:
+    0 4px 12px rgb(var(--shadow-color) / 0.1),
+    0 2px 4px rgb(var(--shadow-color) / 0.06);
+  --shadow-lg:
+    0 8px 24px rgb(var(--shadow-color) / 0.12),
+    0 4px 8px rgb(var(--shadow-color) / 0.06);
+  --shadow-xl:
+    0 16px 40px rgb(var(--shadow-color) / 0.14),
+    0 8px 16px rgb(var(--shadow-color) / 0.08);
+  --shadow-2xl:
+    0 24px 60px rgb(var(--shadow-color) / 0.18),
+    0 12px 24px rgb(var(--shadow-color) / 0.1);
 }
 
 @layer base {

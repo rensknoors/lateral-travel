@@ -276,9 +276,13 @@ The UI should feel intentionally designed, but the component system should stay 
 - Core screens can be assembled from consistent primitives.
 - Buttons, inputs and forms have accessible labels/focus states.
 
-## Phase 7: Browse And Search Experience
+## Phase 7: Browse And Search Experience (Done)
 
 **Goal:** build the first impression and main discovery flow.
+
+**Status:** Done.
+
+**Verification:** `pnpm test && pnpm lint && pnpm build` passes. Manually verified in-browser at desktop and mobile widths: search, sort, price range, amenity toggles and clear-filters all update the URL and results; empty and error states render correctly.
 
 **Work:**
 

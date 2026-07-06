@@ -1,13 +1,24 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { getAvailability, getStay, getStays } from "@/features/stays/api/stay-api";
-import type { StayListFilters } from "@/features/stays/types/stay";
+import {
+  getAvailability,
+  getStay,
+  getStays,
+  setStayFavorite,
+} from "@/features/stays/api/stay-api";
+import type {
+  Stay,
+  StayListFilters,
+  StayListResponse,
+  StaySummary,
+} from "@/features/stays/types/stay";
 
 export const stayQueryKeys = {
   all: ["stays"] as const,
-  list: (filters?: StayListFilters) => [...stayQueryKeys.all, "list", filters] as const,
+  lists: () => [...stayQueryKeys.all, "list"] as const,
+  list: (filters?: StayListFilters) => [...stayQueryKeys.lists(), filters] as const,
   detail: (stayId: string) => [...stayQueryKeys.all, "detail", stayId] as const,
   availability: (stayId: string, checkIn: string, checkOut: string, guests: number) =>
     [...stayQueryKeys.all, "availability", stayId, checkIn, checkOut, guests] as const,
@@ -38,3 +49,27 @@ export const useAvailabilityQuery = (
     queryFn: () => getAvailability(stayId, checkIn, checkOut, guests),
     enabled: enabled && Boolean(stayId && checkIn && checkOut && guests > 0),
   });
+
+export const useSetStayFavoriteMutation = () => {
+  const queryClient = useQueryClient();
+
+  const applyFavorite = (stays: StaySummary[], updated: StaySummary) =>
+    stays.map((stay) =>
+      stay.id === updated.id ? { ...stay, isFavorited: updated.isFavorited } : stay,
+    );
+
+  return useMutation({
+    mutationFn: ({ stayId, isFavorited }: { stayId: string; isFavorited: boolean }) =>
+      setStayFavorite(stayId, isFavorited),
+    onSuccess: (updatedStay) => {
+      queryClient.setQueriesData<StayListResponse>(
+        { queryKey: stayQueryKeys.lists() },
+        (data) => data && { ...data, stays: applyFavorite(data.stays, updatedStay) },
+      );
+      queryClient.setQueryData<Stay>(
+        stayQueryKeys.detail(updatedStay.id),
+        (stay) => stay && { ...stay, isFavorited: updatedStay.isFavorited },
+      );
+    },
+  });
+};

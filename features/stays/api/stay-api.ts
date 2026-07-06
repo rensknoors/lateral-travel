@@ -2,11 +2,13 @@ import { apiFetch } from "@/lib/api/client";
 import type {
   AvailabilityQuote,
   Stay,
+  StayFavoriteUpdate,
   StayListFilters,
   StayListResponse,
+  StaySummary,
 } from "@/features/stays/types/stay";
 
-const buildStayListSearchParams = (filters?: StayListFilters) => {
+export const buildStayListSearchParams = (filters?: StayListFilters) => {
   const params = new URLSearchParams();
 
   if (!filters) {
@@ -15,6 +17,7 @@ const buildStayListSearchParams = (filters?: StayListFilters) => {
 
   if (filters.query) params.set("query", filters.query);
   if (filters.location) params.set("location", filters.location);
+  if (filters.category) params.set("category", filters.category);
   if (filters.guests) params.set("guests", String(filters.guests));
   if (filters.minPrice) params.set("minPrice", String(filters.minPrice));
   if (filters.maxPrice) params.set("maxPrice", String(filters.maxPrice));
@@ -32,6 +35,13 @@ export const getStays = (filters?: StayListFilters) => {
 };
 
 export const getStay = (stayId: string) => apiFetch<Stay>(`/api/stays/${stayId}`);
+
+export const setStayFavorite = (stayId: string, isFavorited: boolean) =>
+  apiFetch<StaySummary>(`/api/stays/${stayId}/favorite`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ isFavorited } satisfies StayFavoriteUpdate),
+  });
 
 export const getAvailability = (
   stayId: string,

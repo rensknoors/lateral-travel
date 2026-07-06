@@ -24,7 +24,6 @@ const includesNormalized = (value: string, query: string) =>
 export const toStaySummary = (stay: Stay): StaySummary => {
   const {
     description: _description,
-    imageUrls: _imageUrls,
     bedrooms: _bedrooms,
     bathrooms: _bathrooms,
     checkInTime: _checkInTime,
@@ -51,6 +50,7 @@ export const filterStays = (stays: Stay[], filters: StayListFilters = {}) =>
 
     const matchesLocation =
       !filters.location || includesNormalized(stay.location, filters.location);
+    const matchesCategory = !filters.category || stay.category === filters.category;
     const matchesGuests = !filters.guests || stay.maxGuests >= filters.guests;
     const matchesMinPrice =
       filters.minPrice === undefined || stay.pricePerNight.amount >= filters.minPrice;
@@ -63,6 +63,7 @@ export const filterStays = (stays: Stay[], filters: StayListFilters = {}) =>
     return (
       matchesQuery &&
       matchesLocation &&
+      matchesCategory &&
       matchesGuests &&
       matchesMinPrice &&
       matchesMaxPrice &&
