@@ -372,9 +372,13 @@ This keeps moderation basic, as requested, while showing real form handling and 
 - Invalid reviews show inline errors.
 - Newly added review appears in the list.
 
-## Phase 10: Availability And Price Quote
+## Phase 10: Availability And Price Quote (Done)
 
 **Goal:** make availability concrete without building a full inventory system.
+
+**Status:** Done.
+
+**Verification:** `pnpm test && pnpm lint && pnpm build` passes. Manually verified in-browser: entering a valid check-in/check-out on a stay detail page fetches a quote and renders nights, subtotal, service fee and total; Reserve stays disabled until the quote resolves as available, and shows a clear message with a retry action when the stay is unavailable or the request fails.
 
 **Work:**
 

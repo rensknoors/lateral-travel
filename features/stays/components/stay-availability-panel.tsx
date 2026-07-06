@@ -19,6 +19,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { AvailabilityQuote } from "@/features/stays/components/stay-availability-panel-quote";
+import { useAvailabilityQuery } from "@/features/stays/api/use-stay-queries";
 import type { Stay } from "@/features/stays/types/stay";
 import { buildCheckoutUrl } from "@/features/stays/utils/build-checkout-url";
 import { buildGuestLabels } from "@/features/stays/utils/build-guest-labels";
@@ -35,7 +37,16 @@ const StayAvailabilityPanel = ({ stay }: StayAvailabilityPanelProps) => {
   const [guests, setGuests] = useState("1");
   const guestCount = Number(guests);
   const guestLabels = buildGuestLabels(stay.maxGuests);
-  const canReserve = isValidBookingSelection(checkIn, checkOut, guestCount);
+  const isSelectionValid = isValidBookingSelection(checkIn, checkOut, guestCount);
+
+  const {
+    data: quote,
+    isLoading,
+    isError,
+    refetch,
+  } = useAvailabilityQuery(stay.id, checkIn, checkOut, guestCount, isSelectionValid);
+
+  const canReserve = isSelectionValid && quote?.isAvailable === true;
   const checkoutUrl = buildCheckoutUrl(stay.id, checkIn, checkOut, guestCount);
 
   return (
@@ -45,9 +56,7 @@ const StayAvailabilityPanel = ({ stay }: StayAvailabilityPanelProps) => {
           <span className="font-heading text-2xl font-semibold">
             {formatMoney(stay.pricePerNight)}
           </span>
-          <span className="text-sm font-normal text-muted-foreground">
-            / night
-          </span>
+          <span className="text-sm font-normal text-muted-foreground">/ night</span>
         </CardTitle>
       </CardHeader>
 
@@ -98,23 +107,29 @@ const StayAvailabilityPanel = ({ stay }: StayAvailabilityPanelProps) => {
             </Select>
           </div>
         </div>
+
+        {isSelectionValid && (
+          <div aria-live="polite" className="border-t border-border pt-4">
+            <AvailabilityQuote
+              quote={quote}
+              isLoading={isLoading}
+              isError={isError}
+              onRetry={refetch}
+            />
+          </div>
+        )}
       </CardContent>
 
       <CardFooter className="flex-col gap-2">
-        {canReserve ? (
-          <Button
-            variant="accent"
-            size="lg"
-            className="w-full"
-            render={<Link href={checkoutUrl} />}
-          >
-            Reserve
-          </Button>
-        ) : (
-          <Button variant="accent" size="lg" className="w-full" disabled>
-            Reserve
-          </Button>
-        )}
+        <Button
+          variant="accent"
+          size="lg"
+          className="w-full"
+          disabled={!canReserve}
+          render={canReserve ? <Link href={checkoutUrl} /> : undefined}
+        >
+          Reserve
+        </Button>
         <p className="text-center text-xs text-muted-foreground">
           You won&apos;t be charged yet
         </p>
